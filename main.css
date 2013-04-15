@@ -1,0 +1,158 @@
+
+/* ==========================================================================
+   Super Form Elements
+   ========================================================================== */
+
+.super-select {
+    border: 0;
+    margin: 0 15px 0 0;
+    padding: 0;
+    background: transparent url("../images/grey-select-right.png") no-repeat right top scroll;
+    color: #222;
+    float: left;
+    padding-right: 30px;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.lt-ie9 .super-select{
+    margin-right: 10px;
+}
+
+.super-select span {
+    background: transparent url("../images/grey-button-left.png") no-repeat left top scroll;
+    display: block;
+    padding: 9px 5px 9px 15px;
+    line-height: 1;
+    min-width: 82px;
+}
+
+.super-select--long-text + span {
+    min-width: 155px;
+}
+
+.super-select--med-text + span {
+    min-width: 142px;
+}
+
+.select-label {
+    position: relative;
+    top: 7px;
+}
+
+.radio-label {
+    position: relative;
+    top: 3px;
+}
+
+.checkbox-label {
+    position: relative;
+    top: 3px;
+}
+.super-select ul{
+    position: absolute;
+    background: #fdfdfd;
+    display: none;
+    border: 1px solid #aaaaaa;
+    border-top: none;
+    border-radius: 0px 0 5px 5px; 
+    -moz-border-radius: 0px 0 5px 5px; 
+    -webkit-border-radius: 0px 0 5px 5px;
+}
+
+.lt-ie9 .super-select ul{
+    behavior: url(assets/js/vendor/pie/PIE.htc);
+}
+
+.super-select li {
+    padding: 6px 14px;
+    
+    cursor: pointer;
+}
+
+.super-select li:hover {
+    background: #009BC1;
+    color: #fff;
+}
+
+.super-select li.active {
+    color: #999999;
+}
+.super-select li.active:hover {
+    color: #fff;
+}
+
+.super-checkbox {
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    overflow: hidden;
+    background-image: url("../images/sprite-checkbox-btns.png");
+    background-repeat: no-repeat;
+    background-position: left top; 
+}
+
+.super-checkbox.active {
+    background-position: left -32px; 
+}
+
+.super-radio {
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    overflow: hidden;
+    background-image: url("../images/sprite-radio-btns.png");
+    background-repeat: no-repeat;
+    background-position: left top; 
+}
+
+.super-radio.active {
+    background-position: left -37px; 
+}
+
+input[type="text"] {
+    border-radius: 5px; 
+    -moz-border-radius: 5px; 
+    -webkit-border-radius: 5px;
+    -moz-box-shadow:inset 0px 3px 5px 0px #ddd;
+    -webkit-box-shadow:inset 0px 3px 5px 0px #ddd;
+    box-shadow:inset 0px 3px 5px 0px #ddd;
+    border: 1px solid #aaa;
+    width: 50px;
+    padding: 6px 10px;
+    margin-right: 10px;
+}
+
+input[type="text"].text-input--med {
+    min-width: 80px;
+}
+
+textarea {
+    border-radius: 5px; 
+    -moz-border-radius: 5px; 
+    -webkit-border-radius: 5px;
+    -moz-box-shadow:inset 0px 3px 5px 0px #ddd;
+    -webkit-box-shadow:inset 0px 3px 5px 0px #ddd;
+    box-shadow:inset 0px 3px 5px 0px #ddd;
+    border: 1px solid #aaa;
+    padding: 6px;
+}
+
+.lt-ie9 input[type="text"],
+.lt-ie9 textarea {
+    position: relative;
+    behavior: url(assets/js/vendor/pie/PIE.htc);
+}
+
+legend{
+    font-size: 22px;
+    font-weight: 400;
+    margin-bottom: 10px
+}
+legend span{
+    font-size: 17px;
+    display: block;
+    margin: 6px 0;
+}
