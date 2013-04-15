@@ -3,7 +3,7 @@
 SuperFormElements v1.4
 Author: Nick Charbonneau
 Replaces native form elements with CSS3 friendly divs and replicates behaviour
-Selects, radios, text inputs and checkboxes supported.
+Selects, radios, and checkboxes supported.
 Init Options:
     selectDataAttr: Name of the data- attribute used to reference the replacement list items
     activeClass:    Class added to selected elements 
@@ -29,7 +29,7 @@ obj.SuperFormElements = {
         self.$options = $.extend( self.$options, opt);
 
         if( $('.'+self.$options.generalClass).length > 0 ){            
-            $('.'+self.$options.generalClass).children('input, select').each(function(){
+            $('.'+self.$options.generalClass).children('input[type="radio"], input[type="checkbox"], select').each(function(){
                 var elem = $(this);
                 elem.wrap(function(){
                     if (elem.prop('tagName') == "SELECT" ){
@@ -41,21 +41,6 @@ obj.SuperFormElements = {
                             + ' ' 
                             + self.$options.prefixClass 
                             + 'select" />'
-                    } else if(elem.prop('type') == 'text') {
-                        elem.hide();                        
-                        return '<' 
-                            + self.$options.wrapperTag 
-                            + ' class="' 
-                            + ((elem.attr('class')) ? elem.attr('class') : '')
-                            + ' ' 
-                            + self.$options.prefixClass 
-                            + elem.attr('type')
-                            + '"><span> '
-                            + ((elem.prop("value")) ? elem.prop("value"): '' )
-                            + '</span><'
-                            + self.$options.wrapperTag 
-                            +' />';
-
                     } else {
                         elem.hide();                        
                         return '<' 
