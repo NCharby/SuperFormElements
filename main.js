@@ -1,8 +1,8 @@
 
 /* ---------------------------------------------------------------------
-SuperFormElements v1.4
+SuperFormElements v1.5
 Author: Nick Charbonneau
-Replaces native form elements with CSS3 friendly divs and replicates behaviour
+Replaces native form elements with CSS3 friendly divs and replicates behavior
 Selects, radios, and checkboxes supported.
 Init Options:
     selectDataAttr: Name of the data- attribute used to reference the replacement list items
@@ -10,7 +10,7 @@ Init Options:
     generalClass:   Trigger class. Should be applied to the parent form element
     prefixClass:    Prefix for class added to new form elements
     wrapperTag:     Type of tag used for new elements
-    dropdownWidthShift: Adds or subtracts from the width the dropdowns. (usefull for matching up borders)
+    dropdownWidthShift: Adds or subtracts from the width the dropdowns. (useful for matching up borders)
 ------------------------------------------------------------------------ */
 
 
@@ -27,37 +27,40 @@ obj.SuperFormElements = {
     init: function(opt){
         var self = this;
         self.$options = $.extend( self.$options, opt);
-
         if( $('.'+self.$options.generalClass).length > 0 ){            
-            $('.'+self.$options.generalClass).children('input[type="radio"], input[type="checkbox"], select').each(function(){
+            $('.'+self.$options.generalClass).find('input[type="radio"], input[type="checkbox"], select').each(function(){
                 var elem = $(this);
                 elem.wrap(function(){
-                    if (elem.prop('tagName') == "SELECT" ){
-                        elem.hide();                        
-                        return '<' 
-                            + self.$options.wrapperTag 
-                            + ' class="' 
-                            + ((elem.attr('class')) ? elem.attr('class') : '')
-                            + ' ' 
-                            + self.$options.prefixClass 
-                            + 'select" />'
-                    } else {
-                        elem.hide();                        
-                        return '<' 
-                            + self.$options.wrapperTag 
-                            + ' class="' 
-                            + ((elem.attr('class')) ? elem.attr('class') : '')
-                            + ' ' 
-                            + self.$options.prefixClass 
-                            + elem.attr('type')
-                            + ' '
-                            + ((elem.prop("checked") == true) ? ' '+self.$options.activeClass : '' )
-                            +'" />';
-                    };
+                    return self.wrapElems(elem)
                 });
                 self.bind(elem);
             });            
         };
+    },
+    wrapElems: function(elem){
+        var self = this;
+        if (elem.prop('tagName') == "SELECT" ){
+                elem.hide();                        
+                return '<' 
+                    + self.$options.wrapperTag 
+                    + ' class="' 
+                    + ((elem.attr('class')) ? elem.attr('class') : '')
+                    + ' ' 
+                    + self.$options.prefixClass 
+                    + 'select" />'
+            } else {
+                elem.hide();                        
+                return '<' 
+                    + self.$options.wrapperTag 
+                    + ' class="' 
+                    + ((elem.attr('class')) ? elem.attr('class') : '')
+                    + ' ' 
+                    + self.$options.prefixClass 
+                    + elem.attr('type')
+                    + ' '
+                    + ((elem.prop("checked") == true) ? ' '+self.$options.activeClass : '' )
+                    +'" />';
+            };
     },
     bind: function($elem){
         var self = this;        
@@ -66,6 +69,7 @@ obj.SuperFormElements = {
 
             $elem.parent('div')
                 .on("click.SuperFormElements", {$elem: $elem ,self: this}, self.toggleSelect);
+
         } else {
             if($elem.attr('type') == 'checkbox' ){
                 $elem.parent('div')
@@ -135,7 +139,17 @@ obj.SuperFormElements = {
             } else {
                 $elem.prop(type, true);
             };            
-            $elem.parent().toggleClass(this.$options.activeClass);
+            $elem.parent('div').toggleClass(this.$options.activeClass);
         };
+    },
+    update: function(){
+        var self = this;
+        $('.'+self.$options.generalClass).find('input[type="radio"], input[type="checkbox"], select').filter(":visible").each(function(){
+            var elem = $(this);
+            elem.wrap(function(){
+                return self.wrapElems(elem)
+            });
+            self.bind(elem);
+        });
     }
 };
