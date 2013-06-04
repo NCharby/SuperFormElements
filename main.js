@@ -1,24 +1,23 @@
-
 /* ---------------------------------------------------------------------
-SuperFormElements v1.5
+SuperFormElements v1.6
 Author: Nick Charbonneau
 Replaces native form elements with CSS3 friendly divs and replicates behavior
-Selects, radios, and checkboxes supported.
+Selects, radios, and checkboxes supported.  Just add super-form to any object.
 Init Options:
     selectDataAttr: Name of the data- attribute used to reference the replacement list items
     activeClass:    Class added to selected elements 
     generalClass:   Trigger class. Should be applied to the parent form element
+    deactivatedClass: If this class is present on a select, the select will not open.
     prefixClass:    Prefix for class added to new form elements
     wrapperTag:     Type of tag used for new elements
     dropdownWidthShift: Adds or subtracts from the width the dropdowns. (useful for matching up borders)
 ------------------------------------------------------------------------ */
-
-
-obj.SuperFormElements = {
+PIQ.SuperFormElements = {
     $options: {
         selectDataAttr: 'selOption',
         activeClass:    'active',
         generalClass:   'super-form',
+        deactivatedClass:'is-deactivated',
         prefixClass:    'super-',
         wrapperTag:     'div',
         dropdownWidthShift: -1
@@ -44,19 +43,19 @@ obj.SuperFormElements = {
                 return '<' 
                     + self.$options.wrapperTag 
                     + ' class="' 
-                    + ((elem.attr('class')) ? elem.attr('class') : '')
-                    + ' ' 
                     + self.$options.prefixClass 
-                    + 'select" />'
+                    + 'select ' 
+                    + ((elem.attr('class')) ? elem.attr('class') : '')
+                    + '" />'
             } else {
                 elem.hide();                        
                 return '<' 
                     + self.$options.wrapperTag 
                     + ' class="' 
-                    + ((elem.attr('class')) ? elem.attr('class') : '')
-                    + ' ' 
                     + self.$options.prefixClass 
                     + elem.attr('type')
+                    + ' ' 
+                    + ((elem.attr('class')) ? elem.attr('class') : '')
                     + ' '
                     + ((elem.prop("checked") == true) ? ' '+self.$options.activeClass : '' )
                     +'" />';
@@ -110,14 +109,26 @@ obj.SuperFormElements = {
 
     },
     toggleSelect: function(e){
+        //Hides all other open select forms
+        $('.'+e.data.self.$options.prefixClass+'select').children('ul').hide();
+        
+        if(e.data.$elem.hasClass(e.data.self.$options.deactivatedClass)) {
+            return false;
+        }
         e.data.self.setSelectWidth(e.data.$elem.parent());
         e.data.$elem.parent().children('ul').toggle();
+
+        //Don't trigger the document handler until actually clicked again
+        e.stopImmediatePropagation();
+        $(document).one("click.SuperSelectClose", function(j){
+            $(e.target).parent().children('ul').hide();
+        });
     },
     setSelectWidth: function($wrapper){
         var self = this;
         $wrapper.children('ul').width( ($wrapper.children('span').outerWidth() + self.$options.dropdownWidthShift) );
     },
-    reportSelectItem: function(e){        
+    reportSelectItem: function(e){
         e.data.$wrapper.children('ul').children().removeClass(e.data.self.$options.activeClass);
         e.data.self.switcher(e.data.$elem, 'selected', $(e.target));
         e.data.$wrapper.children('span').text( e.data.$elem.children(':selected').text() );
