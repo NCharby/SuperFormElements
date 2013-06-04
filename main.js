@@ -67,7 +67,7 @@ PIQ.SuperFormElements = {
             self.buildSelect($elem);
 
             $elem.parent('div')
-                .on("click.SuperFormElements", {$elem: $elem ,self: this}, self.toggleSelect);
+                .on("click.SuperFormElements", {$elem: $elem ,self: this}, self.showSelect);
 
         } else {
             if($elem.attr('type') == 'checkbox' ){
@@ -108,20 +108,33 @@ PIQ.SuperFormElements = {
                 .on("click.SuperFormElements", {$elem: $elem, $wrapper: $wrapper, self: self}, self.reportSelectItem);
 
     },
-    toggleSelect: function(e){
+    showSelect: function(e){
+        var self = e.data.self,
+            $elem = e.data.$elem.parent();
         //Hides all other open select forms
-        $('.'+e.data.self.$options.prefixClass+'select').children('ul').hide();
-        
-        if(e.data.$elem.hasClass(e.data.self.$options.deactivatedClass)) {
-            return false;
+        $('.'+self.$options.prefixClass+'select').children('ul').hide();
+        //Ignore deactivated ones
+        if($elem.hasClass(self.$options.deactivatedClass)) {
+            return;
         }
-        e.data.self.setSelectWidth(e.data.$elem.parent());
-        e.data.$elem.parent().children('ul').toggle();
-
+        self.setSelectWidth($elem);
+        if( !$elem.hasClass(self.$options.activeClass) ){
+            //test for click on option list
+            if( $(e.target).prop('tagName') !== "LI" ){
+                $elem.addClass(self.$options.activeClass)
+                    .children('ul').show();
+            } else {
+                $(document).trigger("click.SuperSelectClose");
+            }
+        }
         //Don't trigger the document handler until actually clicked again
-        e.stopImmediatePropagation();
-        $(document).one("click.SuperSelectClose", function(j){
-            $(e.target).parent().children('ul').hide();
+        e.stopPropagation();
+        $(document).one("click.SuperSelectClose", function(k){
+            $(e.target)
+                .parent()
+                    .removeClass(self.$options.activeClass)
+                .children('ul')
+                    .hide();
         });
     },
     setSelectWidth: function($wrapper){
@@ -129,9 +142,12 @@ PIQ.SuperFormElements = {
         $wrapper.children('ul').width( ($wrapper.children('span').outerWidth() + self.$options.dropdownWidthShift) );
     },
     reportSelectItem: function(e){
-        e.data.$wrapper.children('ul').children().removeClass(e.data.self.$options.activeClass);
+        
         e.data.self.switcher(e.data.$elem, 'selected', $(e.target));
         e.data.$wrapper.children('span').text( e.data.$elem.children(':selected').text() );
+        $('.'+e.data.self.$options.prefixClass+'select')
+            .removeClass(e.data.self.$options.activeClass)
+            .children('ul').hide();
     },
     reportCheckbox: function(e){
         e.data.self.switcher(e.data.$elem, 'checked');
@@ -149,9 +165,10 @@ PIQ.SuperFormElements = {
                $elem.prop(type, false);
             } else {
                 $elem.prop(type, true);
-            };            
+            };
             $elem.parent('div').toggleClass(this.$options.activeClass);
         };
+        $(document).trigger("click.SuperSelectClose");
     },
     update: function(){
         var self = this;
