@@ -1,5 +1,6 @@
+
 /* ---------------------------------------------------------------------
-SuperFormElements v1.6
+SuperFormElements v1.6.1
 Author: Nick Charbonneau
 Replaces native form elements with CSS3 friendly divs and replicates behavior
 Selects, radios, and checkboxes supported.  Just add super-form to any object.
@@ -22,7 +23,7 @@ PIQ.SuperFormElements = {
         wrapperTag:     'div',
         dropdownWidthShift: -1
     },
-
+    lastClick: null,
     init: function(opt){
         var self = this;
         self.$options = $.extend( self.$options, opt);
@@ -118,12 +119,21 @@ PIQ.SuperFormElements = {
             return;
         }
         self.setSelectWidth($elem);
-        if( !$elem.hasClass(self.$options.activeClass) ){
+        if( !$elem.hasClass(self.$options.activeClass) ) {
+            self.lastClick = $(e.target);
             //test for click on option list
             if( $(e.target).prop('tagName') !== "LI" ){
                 $elem.addClass(self.$options.activeClass)
                     .children('ul').show();
             } else {
+                $(document).trigger("click.SuperSelectClose");
+            }
+        } else {
+            if($(e.target)[0] === self.lastClick[0] ){
+                $elem.addClass(self.$options.activeClass)
+                    .children('ul').show();
+            }
+            if($(e.target) === $elem || $(e.target).parent()[0] == $elem[0]){
                 $(document).trigger("click.SuperSelectClose");
             }
         }
