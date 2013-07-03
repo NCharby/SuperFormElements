@@ -1,6 +1,5 @@
-
 /* ---------------------------------------------------------------------
-SuperFormElements v1.6.1
+SuperFormElements v1.6.2
 Author: Nick Charbonneau
 Replaces native form elements with CSS3 friendly divs and replicates behavior
 Selects, radios, and checkboxes supported.  Just add super-form to any object.
@@ -107,7 +106,6 @@ PIQ.SuperFormElements = {
             })
             .children('ul').children()
                 .on("click.SuperFormElements", {$elem: $elem, $wrapper: $wrapper, self: self}, self.reportSelectItem);
-
     },
     showSelect: function(e){
         var self = e.data.self,
@@ -152,18 +150,26 @@ PIQ.SuperFormElements = {
         $wrapper.children('ul').width( ($wrapper.children('span').outerWidth() + self.$options.dropdownWidthShift) );
     },
     reportSelectItem: function(e){
-        
         e.data.self.switcher(e.data.$elem, 'selected', $(e.target));
         e.data.$wrapper.children('span').text( e.data.$elem.children(':selected').text() );
         $('.'+e.data.self.$options.prefixClass+'select')
             .removeClass(e.data.self.$options.activeClass)
             .children('ul').hide();
     },
-    reportCheckbox: function(e){
+    reportCheckbox: function(e){    
+        if( $(e.target).prop('tagName') !== "DIV" ){ //Account for clicks on ancestor labels
+            e.data.$elem.parent('div').toggleClass(e.data.self.$options.activeClass);           
+            return;
+        }
         e.data.self.switcher(e.data.$elem, 'checked');
+        e.preventDefault();
     },
     reportRadio: function(e){
         $('input[name*="' + $(e.data.$elem).prop('name') + '"]').parent().removeClass(e.data.self.$options.activeClass);
+        if( $(e.target).prop('tagName') !== "DIV" ){ //Account for clicks on ancestor labels
+            e.data.$elem.parent('div').toggleClass(e.data.self.$options.activeClass);           
+            return;
+        }
         e.data.self.switcher(e.data.$elem, 'checked');
     },
     switcher: function($elem, type, $caller){
